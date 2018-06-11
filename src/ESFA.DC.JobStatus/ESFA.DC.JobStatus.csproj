@@ -32,7 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ESFA.DC.JobStatus.Dto\ESFA.DC.JobStatus.Dto.csproj" />
+    <ProjectReference Include="..\ESFA.DC.JobStatus.Dto\ESFA.DC.JobStatus.Dto.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
