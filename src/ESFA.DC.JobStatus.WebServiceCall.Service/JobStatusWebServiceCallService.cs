@@ -42,7 +42,14 @@ namespace ESFA.DC.JobStatus.WebServiceCall.Service
         {
             try
             {
-                await client.PostAsync($"{_endPointUrl}/Job/{jobStatusDto.JobId}/{jobStatusDto.JobStatus}", new StringContent(jobStatusDto.JobStatus.ToString(), Encoding.UTF8), cancellationToken);
+                if (jobStatusDto.NumberOfLearners == -1)
+                {
+                    await client.PostAsync(
+                        $"{_endPointUrl}/Job/{jobStatusDto.JobId}/{jobStatusDto.JobStatus}",
+                        new StringContent(jobStatusDto.JobStatus.ToString(), Encoding.UTF8),
+                        cancellationToken);
+                }
+
                 return new QueueCallbackResult(true, null);
             }
             catch (Exception ex)
