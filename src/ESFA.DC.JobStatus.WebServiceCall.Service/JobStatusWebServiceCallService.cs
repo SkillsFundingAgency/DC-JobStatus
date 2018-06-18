@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -34,10 +35,8 @@ namespace ESFA.DC.JobStatus.WebServiceCall.Service
             }
         }
 
-        // Todo: Remove me
         public void Subscribe()
         {
-            throw new NotImplementedException();
         }
 
         public void Subscribe(bool deadLetter)
@@ -52,7 +51,7 @@ namespace ESFA.DC.JobStatus.WebServiceCall.Service
             }
         }
 
-        private async Task<IQueueCallbackResult> ProcessDeadLetterMessageAsync(T jobStatusDto, IDictionary<string, object> messageProperties, CancellationToken cancellationToken)
+        private async Task<IQueueCallbackResult> ProcessDeadLetterMessageAsync(T jobContextDto, IDictionary<string, object> messageProperties, CancellationToken cancellationToken)
         {
             //if (thrownException is TimeoutException)
             //{
@@ -62,6 +61,19 @@ namespace ESFA.DC.JobStatus.WebServiceCall.Service
             //{
             //    await _jobStatus.JobFailedIrrecoverablyAsync(jobContextMessage.JobId);
             //}
+
+            bool irrecoverable = false;
+            if (messageProperties.TryGetValue("Exceptions", out object exceptions))
+            {
+                string[] exceptionList = exceptions.ToString().Split(':');
+                if (exceptionList.Contains("NullReferenceException"))
+                {
+                    irrecoverable = true;
+                }
+            }
+
+            await client.PostAsync($"{_endPointUrl}/Job/{jobContextDto.JobId}/{jobContextDto.JobStatus}", new StringContent(jobContextDto.JobStatus.ToString(), Encoding.UTF8), cancellationToken);
+
             try
             {
                 return new QueueCallbackResult(true, null);
