@@ -16,22 +16,22 @@ namespace ESFA.DC.JobStatus
 
         public async Task JobStartedAsync(long jobId)
         {
-            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)Interface.JobStatusType.Processing));
+            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Processing));
         }
 
         public async Task JobFinishedAsync(long jobId)
         {
-            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)Interface.JobStatusType.Completed));
+            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Completed));
         }
 
         public async Task JobFailedIrrecoverablyAsync(long jobId)
         {
-            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)Interface.JobStatusType.Failed));
+            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Failed));
         }
 
         public async Task JobFailedRecoverablyAsync(long jobId)
         {
-            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)Interface.JobStatusType.FailedRetry));
+            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.FailedRetry));
         }
     }
 }

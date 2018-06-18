@@ -6,7 +6,7 @@ namespace ESFA.DC.JobStatus.Interface
     {
         Task JobStartedAsync(long jobId);
 
-        Task JobFinishedAsync(long jobId);
+        Task JobFinishedAsync(long jobId, int numOfLearners = -1);
 
         Task JobFailedIrrecoverablyAsync(long jobId);
 
