@@ -19,9 +19,9 @@ namespace ESFA.DC.JobStatus
             await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Processing));
         }
 
-        public async Task JobFinishedAsync(long jobId)
+        public async Task JobFinishedAsync(long jobId, int numOfLearners = -1)
         {
-            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Completed));
+            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Completed, numOfLearners));
         }
 
         public async Task JobFailedIrrecoverablyAsync(long jobId)
