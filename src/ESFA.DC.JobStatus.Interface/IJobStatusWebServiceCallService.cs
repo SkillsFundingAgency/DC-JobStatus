@@ -2,6 +2,6 @@
 {
     public interface IJobStatusWebServiceCallService<T>
     {
-        void Subscribe();
+        void Subscribe(bool deadLetter);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -33,22 +34,56 @@ namespace ESFA.DC.JobStatus.WebServiceCall.Service
             }
         }
 
+        // Todo: Remove me
         public void Subscribe()
         {
-            _queueSubscriptionService.Subscribe((dto, token) => ProcessMessageAsync((T)dto, token));
+            throw new NotImplementedException();
         }
 
-        private async Task<bool> ProcessMessageAsync(T jobStatusDto, CancellationToken cancellationToken)
+        public void Subscribe(bool deadLetter)
+        {
+            if (deadLetter)
+            {
+                _queueSubscriptionService.Subscribe((dto, props, token) => ProcessDeadLetterMessageAsync((T)dto, props, token));
+            }
+            else
+            {
+                _queueSubscriptionService.Subscribe((dto, props, token) => ProcessMessageAsync((T)dto, token));
+            }
+        }
+
+        private async Task<IQueueCallbackResult> ProcessDeadLetterMessageAsync(T jobStatusDto, IDictionary<string, object> messageProperties, CancellationToken cancellationToken)
+        {
+            //if (thrownException is TimeoutException)
+            //{
+            //    await _jobStatus.JobFailedRecoverablyAsync(jobContextMessage.JobId);
+            //}
+            //else
+            //{
+            //    await _jobStatus.JobFailedIrrecoverablyAsync(jobContextMessage.JobId);
+            //}
+            try
+            {
+                return new QueueCallbackResult(true, null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to post dead letter job status message", ex);
+                return new QueueCallbackResult(false, ex);
+            }
+        }
+
+        private async Task<IQueueCallbackResult> ProcessMessageAsync(T jobStatusDto, CancellationToken cancellationToken)
         {
             try
             {
                 await client.PostAsync($"{_endPointUrl}/Job/{jobStatusDto.JobId}/{jobStatusDto.JobStatus}", new StringContent(jobStatusDto.JobStatus.ToString(), Encoding.UTF8), cancellationToken);
-                return true;
+                return new QueueCallbackResult(true, null);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Failed to post job status message", ex);
-                return false;
+                return new QueueCallbackResult(false, ex);
             }
         }
     }
