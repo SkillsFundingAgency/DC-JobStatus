@@ -1,7 +1,7 @@
 ﻿namespace ESFA.DC.JobStatus.Dto
 {
     /// <summary>
-    /// The Job Status DTO, must be serialisable.
+    /// The Job Status DTO transported across queues and Web API, must be serialisable.
     /// </summary>
     public class JobStatusDto
     {
@@ -22,6 +22,7 @@
         // ReSharper disable once MemberCanBePrivate.Global
         public int JobStatus { get; set; }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public long NumberOfLearners { get; set; }
     }
 }

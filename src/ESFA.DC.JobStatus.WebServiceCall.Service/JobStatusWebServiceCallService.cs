@@ -1,36 +1,27 @@
 ﻿using System;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.JobStatus.Dto;
 using ESFA.DC.JobStatus.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Queueing.Interface;
+using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.JobStatus.WebServiceCall.Service
 {
-    public sealed class JobStatusWebServiceCallService<T> : IJobStatusWebServiceCallService<T>
+    public sealed class JobStatusWebServiceCallService<T> : BaseWebServiceCallService, IJobStatusWebServiceCallService<T>
         where T : JobStatusDto, new()
     {
         private readonly IQueueSubscriptionService<T> _queueSubscriptionService;
 
-        private readonly ILogger _logger;
-
-        private readonly string _endPointUrl;
-
-        private readonly HttpClient client = new HttpClient();
-
         public JobStatusWebServiceCallService(
-            IJobStatusWebServiceCallServiceConfig jobStatusWebServiceCallServiceConfig, IQueueSubscriptionService<T> queueSubscriptionService, ILogger logger)
+            IJobStatusWebServiceCallServiceConfig jobStatusWebServiceCallServiceConfig,
+            IQueueSubscriptionService<T> queueSubscriptionService,
+            ISerializationService serializationService,
+            ILogger logger)
+            : base(jobStatusWebServiceCallServiceConfig, serializationService, logger)
         {
             _queueSubscriptionService = queueSubscriptionService;
-            _logger = logger;
-            _endPointUrl = jobStatusWebServiceCallServiceConfig.EndPointUrl;
-            if (!_endPointUrl.EndsWith("/"))
-            {
-                _endPointUrl = _endPointUrl + "/";
-            }
         }
 
         public void Subscribe()
@@ -42,16 +33,7 @@ namespace ESFA.DC.JobStatus.WebServiceCall.Service
         {
             try
             {
-                if (jobStatusDto.NumberOfLearners == -1)
-                {
-                    await client.PostAsync(
-                        $"{_endPointUrl}/Job/{jobStatusDto.JobId}/{jobStatusDto.JobStatus}",
-                        new StringContent(jobStatusDto.JobStatus.ToString(), Encoding.UTF8),
-                        cancellationToken);
-                }
-
-                // Todo: Post the status + number of learners
-
+                await SendStatusAsync(jobStatusDto.JobId, jobStatusDto.JobStatus, cancellationToken);
                 return new QueueCallbackResult(true, null);
             }
             catch (Exception ex)
