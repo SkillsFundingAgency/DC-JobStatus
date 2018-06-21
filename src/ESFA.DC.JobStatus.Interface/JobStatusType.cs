@@ -8,6 +8,7 @@
         Completed = 4,
         FailedRetry = 5,
         Failed = 6,
-        Paused = 7
+        Paused = 7,
+        Waiting = 8
     }
 }
