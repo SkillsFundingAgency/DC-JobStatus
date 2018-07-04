@@ -11,5 +11,7 @@ namespace ESFA.DC.JobStatus.Interface
         Task JobFailedIrrecoverablyAsync(long jobId);
 
         Task JobFailedRecoverablyAsync(long jobId);
+
+        Task JobAwaitingActionAsync(long jobId, int numOfLearners = -1);
     }
 }
