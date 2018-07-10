@@ -36,7 +36,7 @@ namespace ESFA.DC.JobStatus
 
         public async Task JobAwaitingActionAsync(long jobId, int numOfLearners = 1)
         {
-            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Waiting));
+            await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Waiting, numOfLearners));
         }
     }
 }
