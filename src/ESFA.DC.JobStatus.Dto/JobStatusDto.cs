@@ -9,7 +9,7 @@
         {
         }
 
-        public JobStatusDto(long jobId, int jobStatus, long numberOfLearners = -1)
+        public JobStatusDto(long jobId, int jobStatus, int numberOfLearners = -1)
         {
             JobId = jobId;
             JobStatus = jobStatus;
@@ -23,6 +23,6 @@
         public int JobStatus { get; set; }
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public long NumberOfLearners { get; set; }
+        public int NumberOfLearners { get; set; }
     }
 }
