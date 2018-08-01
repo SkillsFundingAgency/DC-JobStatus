@@ -34,7 +34,7 @@ namespace ESFA.DC.JobStatus
             await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.FailedRetry));
         }
 
-        public async Task JobAwaitingActionAsync(long jobId, int numOfLearners = 1)
+        public async Task JobAwaitingActionAsync(long jobId, int numOfLearners = -1)
         {
             await _queuePublishService.PublishAsync(new JobStatusDto(jobId, (int)JobStatusType.Waiting, numOfLearners));
         }
