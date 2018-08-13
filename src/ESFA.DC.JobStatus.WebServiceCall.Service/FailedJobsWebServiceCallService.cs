@@ -27,7 +27,7 @@ namespace ESFA.DC.JobStatus.WebServiceCall.Service
 
         public void Subscribe()
         {
-            _queueSubscriptionService.Subscribe(ProcessDeadLetterMessageAsync);
+            _queueSubscriptionService.Subscribe(ProcessDeadLetterMessageAsync, CancellationToken.None);
         }
 
         private async Task<IQueueCallbackResult> ProcessDeadLetterMessageAsync(JobContextDto jobContextDto, IDictionary<string, object> messageProperties, CancellationToken cancellationToken)
